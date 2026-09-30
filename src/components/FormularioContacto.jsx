@@ -47,16 +47,12 @@ const FormularioContacto = () => {
   };
 
   const manejarEnvio = (e) => {
-    // Validamos los datos
     const erroresValidacion = validar();
     setErrores(erroresValidacion);
 
-    // Si hay errores, detenemos el envío del formulario
     if (Object.keys(erroresValidacion).length > 0) {
-      e.preventDefault(); 
+      e.preventDefault();
     } else {
-      // Si no hay errores, el formulario se envía a FormSubmit
-      // Marcamos como enviado después de un pequeño delay
       setTimeout(() => setEnviado(true), 500);
     }
   };
@@ -66,14 +62,12 @@ const FormularioContacto = () => {
       <h2>Formulario de Contacto</h2>
       {enviado && <p className="exito">¡Mensaje enviado con éxito!</p>}
       
-      {/* Reemplaza tu-correo@ejemplo.com por tu correo real */}
       <form 
         action="https://formsubmit.co/torrezgeremias@gmail.com" 
         method="POST"
         onSubmit={manejarEnvio}
         noValidate
       >
-        {/* Opciones de configuración de FormSubmit */}
         <input type="hidden" name="_captcha" value="false" />
         <input type="hidden" name="_subject" value="Nuevo mensaje desde el sitio web" />
         
