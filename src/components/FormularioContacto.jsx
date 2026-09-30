@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import emailjs from '@emailjs/browser';
 
 const FormularioContacto = () => {
   const [datos, setDatos] = useState({
@@ -14,21 +13,19 @@ const FormularioContacto = () => {
 
   const validar = () => {
     const nuevosErrores = {};
-    // Validar Nombre
+
     if (!datos.nombre.trim()) {
       nuevosErrores.nombre = 'El nombre es obligatorio.';
     } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(datos.nombre)) {
       nuevosErrores.nombre = 'El nombre solo puede contener letras.';
     }
 
-    // Validar Apellido
     if (!datos.apellido.trim()) {
       nuevosErrores.apellido = 'El apellido es obligatorio.';
     } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(datos.apellido)) {
       nuevosErrores.apellido = 'El apellido solo puede contener letras.';
     }
 
-    // Validar Correo
     const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!datos.correo.trim()) {
       nuevosErrores.correo = 'El correo es obligatorio.';
@@ -36,7 +33,6 @@ const FormularioContacto = () => {
       nuevosErrores.correo = 'Ingrese un correo electrónico válido.';
     }
 
-    // Validar Mensaje
     if (!datos.mensaje.trim()) {
       nuevosErrores.mensaje = 'El mensaje es obligatorio.';
     } else if (datos.mensaje.length > 300) {
@@ -51,31 +47,17 @@ const FormularioContacto = () => {
   };
 
   const manejarEnvio = (e) => {
-    e.preventDefault();
+    // Validamos los datos
     const erroresValidacion = validar();
     setErrores(erroresValidacion);
 
-    if (Object.keys(erroresValidacion).length === 0) {
-      // Aquí van tus credenciales de EmailJS
-      emailjs.send(
-        'service_6eqw9i8',    // Reemplazar
-        'template_sqj47y4',   // Reemplazar
-        {
-          from_name: `${datos.nombre} ${datos.apellido}`,
-          from_email: datos.correo,
-          message: datos.mensaje,
-        },
-        't5a7lbPUgpfsbR1Yy'       // Reemplazar
-      )
-      .then(() => {
-        setEnviado(true);
-        setDatos({ nombre: '', apellido: '', correo: '', mensaje: '' });
-        setErrores({});
-      })
-      .catch((error) => {
-        alert('Hubo un error al enviar el mensaje. Intente nuevamente.');
-        console.error(error);
-      });
+    // Si hay errores, detenemos el envío del formulario
+    if (Object.keys(erroresValidacion).length > 0) {
+      e.preventDefault(); 
+    } else {
+      // Si no hay errores, el formulario se envía a FormSubmit
+      // Marcamos como enviado después de un pequeño delay
+      setTimeout(() => setEnviado(true), 500);
     }
   };
 
@@ -83,7 +65,17 @@ const FormularioContacto = () => {
     <div className="formulario-container">
       <h2>Formulario de Contacto</h2>
       {enviado && <p className="exito">¡Mensaje enviado con éxito!</p>}
-      <form onSubmit={manejarEnvio} noValidate>
+      
+      {/* Reemplaza tu-correo@ejemplo.com por tu correo real */}
+      <form 
+        action="https://formsubmit.co/torrezgeremias@gmail.com" 
+        method="POST"
+        onSubmit={manejarEnvio}
+        noValidate
+      >
+        {/* Opciones de configuración de FormSubmit */}
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_subject" value="Nuevo mensaje desde el sitio web" />
         
         <div className="campo">
           <label>Nombre:</label>
